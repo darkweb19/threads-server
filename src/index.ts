@@ -2,6 +2,7 @@ import express from "express";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
 import bodyParser from "body-parser";
+import { User } from "./app/user";
 
 const app = express();
 app.use(bodyParser.json());
@@ -10,13 +11,14 @@ app.use(bodyParser.json());
 async function initServer() {
 	const server = new ApolloServer({
 		typeDefs: `
+		${User.types}
         type Query {
-            hello : String
+            ${User.queries}
         }
         `,
 		resolvers: {
 			Query: {
-				hello: () => "hello",
+				...User.resolvers.queries,
 			},
 		},
 	});
