@@ -34,7 +34,6 @@ const queries = {
 			where: { email: data.email },
 		});
 
-		if (checkUser) throw new Error("user already exists");
 		//if no user then create a user in database
 		if (!checkUser) {
 			await prismaClient.user.create({
