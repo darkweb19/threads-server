@@ -4,6 +4,8 @@ import { expressMiddleware } from "@apollo/server/express4";
 import bodyParser from "body-parser";
 import { User } from "./app/user";
 import cors from "cors";
+import { GraphqlContext } from "./interfaces";
+import JWTService from "./authentication/Jwt";
 
 const app = express();
 app.use(bodyParser.json());
@@ -11,7 +13,7 @@ app.use(cors());
 
 //this function will initialize the server
 async function initServer() {
-	const server = new ApolloServer({
+	const server = new ApolloServer<GraphqlContext>({
 		typeDefs: `
 		${User.types}
         type Query {
@@ -25,7 +27,20 @@ async function initServer() {
 		},
 	});
 	await server.start();
-	app.use("/graphql", expressMiddleware(server));
+	app.use(
+		"/graphql",
+		expressMiddleware(server, {
+			context: async ({ req, res }) => {
+				return {
+					user: req.headers.authorization
+						? JWTService.decodeToken(
+								req.headers.authorization.split("Bearer ")[1]
+						  )
+						: undefined,
+				};
+			},
+		})
+	);
 }
 
 //this will run the server and go to htto://localhost:8000/graphql
