@@ -6,6 +6,7 @@ import { User } from "./app/user";
 import cors from "cors";
 import { GraphqlContext } from "./interfaces";
 import JWTService from "./authentication/Jwt";
+import { Thread } from "./app/threads";
 
 const app = express();
 app.use(bodyParser.json());
@@ -16,14 +17,23 @@ async function initServer() {
 	const server = new ApolloServer<GraphqlContext>({
 		typeDefs: `
 		${User.types}
+		${Thread.types}
         type Query {
             ${User.queries}
         }
+
+		type Mutation {
+			${Thread.mutations}
+		}
         `,
 		resolvers: {
 			Query: {
 				...User.resolvers.queries,
 			},
+			Mutation: {
+				...Thread.resolvers.mutations,
+			},
+			...Thread.resolvers.extraResolvers,
 		},
 	});
 	await server.start();
