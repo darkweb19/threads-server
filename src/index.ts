@@ -20,6 +20,7 @@ async function initServer() {
 		${Thread.types}
         type Query {
             ${User.queries}
+			${Thread.queries}
         }
 
 		type Mutation {
@@ -29,11 +30,14 @@ async function initServer() {
 		resolvers: {
 			Query: {
 				...User.resolvers.queries,
+				...Thread.resolvers.queries,
 			},
+
 			Mutation: {
 				...Thread.resolvers.mutations,
 			},
 			...Thread.resolvers.extraResolvers,
+			...User.resolvers.extraResolvers,
 		},
 	});
 	await server.start();

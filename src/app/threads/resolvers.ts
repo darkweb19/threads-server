@@ -5,6 +5,11 @@ import { GraphqlContext } from "../../interfaces";
 interface CreateThreadPayload {
 	content: string;
 }
+
+const queries = {
+	getAllThreads: () =>
+		prismaClient.thread.findMany({ orderBy: { createdAt: "desc" } }),
+};
 const mutations = {
 	createThread: async (
 		parent: any,
@@ -29,4 +34,4 @@ const extraResolvers = {
 			prismaClient.user.findUnique({ where: { id: parent.authorId } }),
 	},
 };
-export const resolvers = { mutations, extraResolvers };
+export const resolvers = { mutations, extraResolvers, queries };

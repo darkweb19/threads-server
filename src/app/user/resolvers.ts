@@ -2,6 +2,7 @@ import axios from "axios";
 import { prismaClient } from "../../clients/db";
 import JWTService from "../../authentication/Jwt";
 import { GraphqlContext } from "../../interfaces";
+import { User } from "@prisma/client";
 
 interface GoogleTokenResult {
 	iss: string;
@@ -64,4 +65,14 @@ const queries = {
 	},
 };
 
-export const resolvers = { queries };
+const extraResolvers = {
+	User: {
+		threads: (parent: User) =>
+			prismaClient.thread.findMany({
+				where: {
+					id: parent.id,
+				},
+			}),
+	},
+};
+export const resolvers = { queries, extraResolvers };
