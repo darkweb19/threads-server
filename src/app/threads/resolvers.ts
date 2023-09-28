@@ -34,4 +34,5 @@ const extraResolvers = {
 			prismaClient.user.findUnique({ where: { id: parent.authorId } }),
 	},
 };
+
 export const resolvers = { mutations, extraResolvers, queries };

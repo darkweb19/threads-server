@@ -70,7 +70,7 @@ const extraResolvers = {
 		threads: (parent: User) =>
 			prismaClient.thread.findMany({
 				where: {
-					id: parent.id,
+					author: { id: parent.id },
 				},
 			}),
 	},
